@@ -1,0 +1,33 @@
+\name{stamppGmatrix}
+\alias{stamppGmatrix}
+\title{
+Genomic Relationship Calculation
+}
+\description{
+This function calculates a genomic relationship matrix following the method decribed by Yang et al (2010).
+}
+\usage{
+stamppGmatrix(geno)
+}
+\arguments{
+  \item{geno}{
+a data frame containing allele frequency data generated from stamppConvert, or a genlight object containing genotype data, individual IDs, population IDs and ploidy levels.
+}
+}
+\value{
+An object of class matrix which contains the genomic relationship values between each individual.
+}
+\references{
+Yang J, Benyamin B, McEvoy BP, et al (2010) Common SNPs explain a large proportion of the heritability for human height. Nat Genet 42, 565-569
+}
+\author{
+LW Pembleton
+}
+\examples{
+# import genotype data and convert to allele frequecies 
+data(potato.mini, package="StAMPP")
+potato.freq <- stamppConvert(potato.mini, 1, "r")
+
+# Calculate genomic relationship values between each individual
+potato.fst <- stamppGmatrix(potato.freq)
+}

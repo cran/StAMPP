@@ -19,7 +19,7 @@ function (geno, pop=TRUE){
       
       data=data*ploidy.levels #convert percentage of allele A to number of allele A based on ploidy level
       
-      data <- new("genlight", data, multicore=FALSE) #convert genotype data to genlight object
+      data <- new("genlight", data, parallel=FALSE) #convert genotype data to genlight object
       indNames(data)=ind #add individual ids to genlight object
       ploidy(data)=ploidy.levels #add ploidy levels to genlight object
       

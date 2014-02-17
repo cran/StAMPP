@@ -11,8 +11,6 @@ stamppAmova <- function(dist.mat, geno, perm=100){
     
   if(class(geno)=="genlight"){  #if input file is a genlight object convert to a data.frame
     
-    library(adegenet)
-    
     geno2 <- geno
     
     geno <- as.matrix(geno2) #extract genotype data from genlight object

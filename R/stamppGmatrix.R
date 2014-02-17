@@ -12,9 +12,7 @@ function(geno){
 
   
   if(class(geno)=="genlight"){  #if input file is a genlight object convert to a data.frame
-    
-    library(adegenet)
-    
+        
     geno2 <- geno
     
     geno <- as.matrix(geno2) #extract genotype data from genlight object
@@ -64,7 +62,11 @@ function(geno){
   
   ###### stepwise calculation of genomic relationship values due to large matrix and memory restrictions ######
   
-  split.size <- floor(50/as.numeric(object.size(simple.geno)/1048576))*totalind #size of duplicated p matrix under 50mb
+  #split.size <- floor(50/as.numeric(object.size(simple.geno)/1048576))*totalind #size of duplicated p matrix under 50mb
+  
+  split.size <- ceiling((50/as.numeric(object.size(simple.geno)/1048576))*totalind) #size of duplicated p matrix under 50mb
+  
+  
   if(split.size==0){
     splite.size=totalind #attempt split size the same as original p-matrix size --- may require computer with big memory
   }
@@ -81,27 +83,66 @@ function(geno){
     
   a=NULL
   
-  if(splits > 1){ #if dataset is too large and needs to be split      
-    for(i in 1:(splits-1)){ #stepwise calculation of genomic relationships based on 50mb split chuncks
+  if(split.size > 1){  #if split size is greater than 1, therefore xj,m2p.dup will be a 2dim matrix
+    if(splits > 1){ #if dataset is too large and needs to be split      
+      for(i in 1:(splits-1)){ #stepwise calculation of genomic relationships based on 50mb split chuncks
+        
+        xj.m2p.dup <- (xj.m2p[xj.ids[((pre.split*split.size)+1):(i*split.size)],])
+        xk.m2p.dup <- (xk.m2p[xk.ids[((pre.split*split.size)+1):(i*split.size)],])
+        
+        twop.1mp.dup <- twop.1mp[rep(1, split.size),]
+        
+        a <- c(a, rowMeans(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
+        
+        pre.split <- i
+        
+      }
+    }
+    
+    if( length(((pre.split*split.size)+1):(totalind*totalind))>1 ){ #if final split size is >1 and therefore calculations are on a 2dim matrix
       
-      xj.m2p.dup <- as.matrix(xj.m2p[xj.ids[((pre.split*split.size)+1):(i*split.size)],])
-      xk.m2p.dup <- as.matrix(xk.m2p[xk.ids[((pre.split*split.size)+1):(i*split.size)],])
+      xj.m2p.dup <- (xj.m2p[xj.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+      xk.m2p.dup <- (xk.m2p[xk.ids[((pre.split*split.size)+1):(totalind*totalind)],])
       
-      twop.1mp.dup <- twop.1mp[rep(1, split.size),]
+      twop.1mp.dup <- twop.1mp[rep(1, length(((pre.split*split.size)+1):(totalind*totalind))),]
       
       a <- c(a, rowMeans(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
       
-      pre.split <- i
+    }else{ #if final split size is 1 and therefore calculations are on a vector
+      
+      xj.m2p.dup <- (xj.m2p[xj.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+      xk.m2p.dup <- (xk.m2p[xk.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+      
+      twop.1mp.dup <- twop.1mp[rep(1, length(((pre.split*split.size)+1):(totalind*totalind))),]
+      
+      a <- c(a, mean(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
       
     }
+  }else{ #if split size is 1, therefore xj,m2p.dup will be a vector, therefore rowSums do not work
+    if(splits > 1){ #if dataset is too large and needs to be split      
+      for(i in 1:(splits-1)){ #stepwise calculation of genomic relationships based on 50mb split chuncks
+        
+        xj.m2p.dup <- (xj.m2p[xj.ids[((pre.split*split.size)+1):(i*split.size)],])
+        xk.m2p.dup <- (xk.m2p[xk.ids[((pre.split*split.size)+1):(i*split.size)],])
+        
+        twop.1mp.dup <- twop.1mp[rep(1, split.size),]
+        
+        a <- c(a, mean(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
+        
+        pre.split <- i
+        
+      }
+    }
+    
+    xj.m2p.dup <- (xj.m2p[xj.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+    xk.m2p.dup <- (xk.m2p[xk.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+    
+    twop.1mp.dup <- twop.1mp[rep(1, length(((pre.split*split.size)+1):(totalind*totalind))),]
+    
+    a <- c(a, mean(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
+        
   }
   
-  xj.m2p.dup <- as.matrix(xj.m2p[xj.ids[((pre.split*split.size)+1):(totalind*totalind)],])
-  xk.m2p.dup <- as.matrix(xk.m2p[xk.ids[((pre.split*split.size)+1):(totalind*totalind)],])
-  
-  twop.1mp.dup <- twop.1mp[rep(1, length(((pre.split*split.size)+1):(totalind*totalind))),]
-  
-  a <- c(a, rowMeans(((xj.m2p.dup*xk.m2p.dup)/twop.1mp.dup), na.rm=TRUE)) #estimted genomic relationships
   
   #########################     
 

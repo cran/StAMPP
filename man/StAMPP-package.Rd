@@ -62,7 +62,7 @@ Jombart T, Ahmed I (2011) adegenet 1.3-1: new tools for the analysis of genome-w
 \examples{
 # import genotype data and convert to allele frequecies 
 data(potato.mini, package="StAMPP")
-potato.freq <- stamppConvert(potato.mini, 1, "r")
+potato.freq <- stamppConvert(potato.mini, "r")
 
 # Calculate genetic distance between populations
 potato.D.pop <- stamppNeisD(potato.freq, TRUE)

@@ -10,8 +10,7 @@
 stampp2genlight <-
 function (geno, pop=TRUE){
     
-    library(adegenet)
-                  
+                    
       data <- geno[,-(1:5)]   #matrix of allele frequencies
       ind <- geno[,1] #individual ids
       ploidy.levels <- geno[,4] #ploidy

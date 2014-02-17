@@ -45,7 +45,7 @@ LW Pembleton
 \examples{
 # import genotype data and convert to allele frequecies 
 data(potato.mini, package="StAMPP")
-potato.freq <- stamppConvert(potato.mini, 1, "r")
+potato.freq <- stamppConvert(potato.mini, "r")
 
 # Calculate pairwise Fst values between each population
 potato.fst <- stamppFst(potato.freq, 100, 95, 1)

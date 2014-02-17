@@ -11,9 +11,7 @@ stamppFst <-
 function (geno, nboots=100, percent=95, nclusters=1){
   
   if(class(geno)=="genlight"){  #if genotype object is a genlight object convert to a data.frame
-    
-    library(adegenet)
-    
+        
     geno2 <- geno
     
     geno <- as.matrix(geno2) #extract genotype data from genlight object
@@ -47,9 +45,6 @@ function (geno, nboots=100, percent=95, nclusters=1){
   
   geno <- geno[,-5] #remove format information  
     
-  library(parallel)
-  library(doParallel)
-  library(foreach)
   cl <- makeCluster(nclusters)
   registerDoParallel(cl) #establish clusters for multithreaded computing 
   

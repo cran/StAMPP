@@ -12,9 +12,7 @@ function (geno, pop=TRUE){
     
   
     if(class(geno)=="genlight"){  #if input file is a genlight object convert to a data.frame
-      
-      library(adegenet)
-      
+            
       geno2 <- geno
       
       geno <- as.matrix(geno2) #extract genotype data from genlight object
@@ -73,14 +71,19 @@ function (geno, pop=TRUE){
       row.names(p)=pops
       
       m <- matrix(1, nrow=dim(p)[1], ncol=dim(p)[2])
-      m[p=="NaN"]=0 #matrix of true false (1/0) missing genotype of each ind & loci
+      m[is.na(p)]=0 #matrix of true false (1/0) missing genotype of each ind & loci
+            
+      p <- as.matrix(p)
+      p[is.na(p)]=0
       
-      p[p=='NaN']=0
-      jxy <- (as.matrix(p*m)%*%t(as.matrix(p*m)))+(as.matrix((1-p)*m)%*%t(as.matrix((1-p)*m))) #sum of the product of allele freq between pops
+      tmp.x <- p
+      tmp.y <- (1-p)*m
+      jxy <- (tmp.x%*%t(tmp.x))+(tmp.y%*%t(tmp.y))
       
       ###### stepwise calculation of jxjy due to large matrix and memory restrictions ######
+                  
+      split.size <- ceiling((50/as.numeric(object.size(p)/1048576))*npops) #size of duplicated p matrix under 50mb
       
-      split.size <- floor(50/as.numeric(object.size(p)/1048576))*npops #size of duplicated p matrix under 50mb
       if(split.size==0){
         split.size=npops #attempt split size the same as original p-matrix size --- may require computer with big memory
       }
@@ -93,12 +96,14 @@ function (geno, pop=TRUE){
       
       jxjy=NULL
       
+      if(split.size > 1){ #if split size is greater than 1, therefore p.dup will be a 2dim matrix
+      
       if(splits > 1){ #if dataset is too large and needs to be split      
         for(i in 1:(splits-1)){ #stepwise calculation of jxjy based on 50mb split chuncks
-          
-          p.dup <- as.matrix(p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
-          m.dup <- as.matrix(m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
-          m.dup2 <- as.matrix(m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])
+
+          p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+          m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+          m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])      
           
           jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
           
@@ -107,11 +112,46 @@ function (geno, pop=TRUE){
         }
       } 
       
-      p.dup <- as.matrix(p[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
-      m.dup <- as.matrix(m[m.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
-      m.dup2 <- as.matrix(m[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],])
+      if( length(((pre.split*split.size)+1):(npops*npops))>1 ){ #if final split size is >1 and therefore calculations are on a 2dim matrix     
+      
+      p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+      m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+      m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],])
       
       jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+      
+      }else{ #if final split size is 1 and therefore calculations are on a vector
+      
+      p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+      m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+      m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],])
+        
+      jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+        
+      }
+      
+      }else{ #if split size is 1, therefore p.dup and m.dup will be a vector, therefore rowSums do not work
+        
+        if(splits > 1){ #if dataset is too large and needs to be split      
+          for(i in 1:(splits-1)){ #stepwise calculation of jxjy based on 50mb split chuncks
+            
+            p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+            m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+            m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])      
+            
+            jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+            
+            pre.split <- i
+          }
+        } 
+        
+        p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+        m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(npops*npops)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+        m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(npops*npops)],])
+        
+        jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+        
+      }
       
       ######################### 
             
@@ -126,6 +166,7 @@ function (geno, pop=TRUE){
       
     }
     
+    
     if(pop==FALSE){ #if calculating genetic distance between individuals
       
       p <- geno[,5:(nloc+4)] #matrix of allele frequencies
@@ -133,18 +174,25 @@ function (geno, pop=TRUE){
       colnames(p)=colnames(geno[5:(4+nloc)])
       
       m <- matrix(1, nrow=dim(p)[1], ncol=dim(p)[2])
-      m[p=="NaN"]=0 #matrix of true false (1/0) missing genotype of each ind & loci
+      m[is.na(p)]=0 #matrix of true false (1/0) missing genotype of each ind & loci
       
-      p[p=='NaN']=0
-      jxy <- (as.matrix(p*m)%*%t(as.matrix(p*m)))+(as.matrix((1-p)*m)%*%t(as.matrix((1-p)*m))) #sum of the product of allele freq between inds
+      p <- as.matrix(p)
+      p[is.na(p)]=0
       
+      tmp.x <- p
+      tmp.y <- (1-p)*m
+      jxy <- (tmp.x%*%t(tmp.x))+(tmp.y%*%t(tmp.y))
+            
       ###### stepwise calculation of jxjy due to large matrix and memory restrictions ######
+          
+      split.size <- ceiling((50/as.numeric(object.size(p)/1048576))*totalind) #size of duplicated p matrix under 50mb
       
-      split.size <- floor(50/as.numeric(object.size(p)/1048576))*totalind #size of duplicated p matrix under 50mb
       if(split.size==0){
         splite.size=totalind #attempt split size the same as original p-matrix size --- may require computer with big memory
       }
+      
       splits <- ceiling((totalind*totalind)/split.size) #number of 50mb splits to perform
+      
       pre.split <- 0
       
       p.dup.ids <- (sort((rep(1:totalind, totalind)))) #duplication ids for p
@@ -152,26 +200,63 @@ function (geno, pop=TRUE){
       
       jxjy=NULL
       
-      if(splits > 1){ #if dataset is too large and needs to be split      
-        for(i in 1:(splits-1)){ #stepwise calculation of jxjy based on 50mb split chuncks
+      if(split.size > 1){ #if split size is greater than 1, therefore p.dup will be a 2dim matrix
+      
+        if(splits > 1){ #if dataset is too large and needs to be split      
+          for(i in 1:(splits-1)){ #stepwise calculation of jxjy based on 50mb split chuncks
+            
+            p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+            m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+            m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])      
+  
+            jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+            
+            pre.split <- i
+            
+          }
+        } 
+        
+        if( length(((pre.split*split.size)+1):(totalind*totalind))>1 ){ #if final split size is >1 and therefore calculations are on a 2dim matrix
+        
+        p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+        m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+        m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+              
+        jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+        
+        }else{ #if final split size is 1 and therefore calculations are on a vector
+        
+        p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+        m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+        m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],])
           
-          p.dup <- as.matrix(p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
-          m.dup <- as.matrix(m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
-          m.dup2 <- as.matrix(m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])
-          
-          jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
-          
-          pre.split <- i
-          
+        jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+                  
         }
-      } 
-      
-      p.dup <- as.matrix(p[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
-      m.dup <- as.matrix(m[m.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
-      m.dup2 <- as.matrix(m[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],])
-      
-      jxjy <- c(jxjy, rowSums((p.dup*m.dup)^2)+rowSums(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
-          
+        
+        
+      }else{ #if split size is 1, therefore p.dup and m.dup will be a vector, therefore rowSums do not work
+        
+        if(splits > 1){ #if dataset is too large and needs to be split      
+          for(i in 1:(splits-1)){ #stepwise calculation of jxjy based on 50mb split chuncks
+            
+            p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+            m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(i*split.size)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+            m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(i*split.size)],])      
+            
+            jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+            
+            pre.split <- i
+          }
+        } 
+        
+        p.dup <- (p[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of allele frequencies to calculate squared allele freq, jx & jy
+        m.dup <- (m[m.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],]) #matrix of true false (1/0) missing genotype of each ind & loci to adjust p.dup matrix for missing alleles
+        m.dup2 <- (m[p.dup.ids[((pre.split*split.size)+1):(totalind*totalind)],])
+        
+        jxjy <- c(jxjy, sum((p.dup*m.dup)^2)+sum(((1-p.dup)*m.dup*m.dup2)^2)) #sum of square allele freq
+        
+      }
      #########################     
 
       sq.jxjy <- sqrt(matrix(jxjy, nrow=totalind, ncol=totalind)) #square root of the sum of squared allele freq

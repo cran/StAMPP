@@ -7,17 +7,14 @@ Import and Convert
 Imports biallelic AB formated or allele A frequency genotype data. If the data is in imported in biallelic AB format this function also converts it to allele frequencies.
 }
 \usage{
-stamppConvert(genotype.file, nclusters = 1, type = "csv")
+stamppConvert(genotype.file, type = "csv")
 }
 \arguments{
   \item{genotype.file}{
 the genotype input file. This should be a R matrix object or a file path for a csv file containing the genotype data in either bialleleic AB format or allele 'A' frequency format, or a genlight object containing genotype data. 
 }
-  \item{nclusters}{
-the number of proccesor treads or cores to use during calculations. 
-}
   \item{type}{
-the type of file the genotype data is being imported from; "csv" = comma seperated file, "r" = matrix in the R workspace, "genlight" = genlight object.
+the type of file the genotype data is being imported from; "csv" = comma seperated file, "r" = data frame in the R workspace, "genlight" = genlight object.
 }
 }
 \details{
@@ -36,5 +33,5 @@ LW Pembleton
 data(potato.mini, package="StAMPP")
 
 # Convert to allele frequencies
-potato.freq <- stamppConvert(potato.mini, 1, "r")
+potato.freq <- stamppConvert(potato.mini, "r")
 }

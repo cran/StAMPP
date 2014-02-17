@@ -1,4 +1,14 @@
-			CHANGES IN STAMPP VERSION 1.1
+  		CHANGES IN STAMPP VERSION 1.2
+
+2014-02-26 LW Pembleton <luke.pembleton@dpi.vic.gov.au>
+
+* speed improvements to stamppConvert, stamppNeisD and stamppGmatrix for large datasets
+
+* fixed an error in calculating Nei's genetic distance between individuals using genotype data imported in 'freq' format; -- Prior to this update StAMPP had a bug that when missing data was ecountered it would print an error to the screen and would not calculate the genetic distances. This error was only associated with data imported in 'freq' format when calculating genetic distances between individuals. Any results from data analysis in StAMPP were and are still accurate as this error prevented the calculation of genetic distance and therefore no incorrect values would have been generated.
+
+* corrected an error in calculating Nei's genetic distance where StAMPP did not split the calculation up when using large datasets and consequently produced a memory allocation error when memory was limiting.
+
+      CHANGES IN STAMPP VERSION 1.1
 
 2013-06-06 LW Pembleton <luke.pembleton@dpi.vic.gov.au>
 

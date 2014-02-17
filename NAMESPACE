@@ -1,1 +1,6 @@
-exportPattern("^[[:alpha:]]+")
+export(stamppConvert, stamppNeisD, stamppFst, stamppGmatrix, stamppPhylip, stamppAmova, stampp2genlight)
+import(parallel)
+import(doParallel)
+import(foreach)
+import(adegenet)
+import(pegas)

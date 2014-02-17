@@ -8,7 +8,7 @@
 ###########################################################
 
 stamppConvert <-
-function (genotype.file, nclusters=1, type="csv"){
+function (genotype.file, type="csv"){
     
     if(type=="csv" | type=="r"){ #import genotype data from csv file or R workspace
     
@@ -17,14 +17,7 @@ function (genotype.file, nclusters=1, type="csv"){
       }else{
         geno <- genotype.file #import from R workspace
       }  
-      
-      library(parallel)
-      library(doParallel)
-      library(foreach)
-      
-      cl <- makeCluster(nclusters)
-      registerDoParallel(cl) #establish clusters for multithreaded computing 
-      
+                  
       totalind <- nrow(geno) #number of individuals
       nloc <- ncol(geno)-4 #number of loci/markers
       
@@ -42,48 +35,64 @@ function (genotype.file, nclusters=1, type="csv"){
       ploidy <- geno[,3] #ploidy levels
       
       geno <- cbind(geno[,1:2], pop.num, ploidy, format, geno[,5:(4+nloc)]) #combine genotype data with labels to form stampp geno file
-      
-      comb.geno <- matrix(NA, ncol=nloc, nrow=length(geno[,1])) 
-      comb.geno <- cbind(geno[,(1:5)], comb.geno) #matrix to store allele frequency formated genotypes
-      
-      colnames(comb.geno) <- colnames(geno)
-      
+  
       ab.geno <- subset(geno, geno[,5]=="BiA") #subset individuals with AB coded genotypes
       nind.ab.geno <- length(ab.geno[,2])
       
       freq.geno <- subset(geno, geno[,5]=="freq") #subset individuals with genotypes stored as allele frequencies
       nind.freq.geno <- length(freq.geno[,2])
       
-      res <- foreach(i = 1:nloc, .combine=cbind, .inorder=TRUE) %dopar% {  
+      if(nind.ab.geno > 0){
+      
+        tmp <- ab.geno[,-c(1:5)]
+        tmp <- gsub("-9", "", as.matrix(tmp), fixed=TRUE)
+        tmp.a <- gsub("B", "", as.matrix(tmp), fixed=TRUE)
+        tmp.a <- nchar(as.matrix(tmp.a))
+        tmp.b <- gsub("A", "", as.matrix(tmp), fixed=TRUE)
+        tmp.b <- nchar(as.matrix(tmp.b))
         
-        #convert AB format genotypes to allele frequency format genotypes
+        res <- matrix(NA, nrow=nind.ab.geno, ncol=nloc)
         
-        notmval <- ab.geno[,(5+i)]!=-9
+        for(i in 1:nloc){
+          res[,i]=(tmp.a[,i]/(tmp.a[,i]+tmp.b[,i]))
+        }
         
-        a <- gsub("B", "", ab.geno[,(5+i)])
-        a <- nchar(a)*notmval
-        b <- gsub("A", "", ab.geno[,(5+i)])
-        b <- nchar(b)*notmval
-        (a/(a+b))
+        rm(tmp.a, tmp.b, tmp)
         
-      } 
+        ab.geno.pt1 <- as.data.frame(ab.geno[,c(1:5)])
+        ab.geno.pt2 <- as.data.frame(res)
+        ab.geno <- cbind(ab.geno.pt1, ab.geno.pt2)    
+        
+        rm(ab.geno.pt2, ab.geno.pt1, res)
+      }
       
-      colnames(res) <- colnames(freq.geno[,6:(5+nloc)])
       
-      comb.geno[,(6:(5+nloc))]=apply(rbind(res, freq.geno[,6:(5+nloc)]), 2, as.numeric) #store allele frequency genotypes in matrix
+      colnames(ab.geno)=colnames(geno)
       
-      comb.geno[comb.geno==-9] <- NA #replace missing marker genotypes with NaN to be ignored in future calculations
+      freq.geno.pt1 <- freq.geno[,c(1:5)]
+      freq.geno.pt2 <- as.matrix(freq.geno[,-c(1:5)])
+      class(freq.geno.pt2)="numeric"
+      freq.geno.pt2[freq.geno.pt2==-9]=NA
+      freq.geno <- cbind(freq.geno.pt1, freq.geno.pt2)
+      colnames(freq.geno)=colnames(geno)
       
-      stopCluster(cl)
+      comb.geno <- rbind(ab.geno, freq.geno)
+      rm(ab.geno, freq.geno, geno)
       
+      comb.geno[,1]=as.character(comb.geno[,1])
+      comb.geno[,2]=as.character(comb.geno[,2])
+      comb.geno[,3]=as.integer(comb.geno[,3])
+      comb.geno[,4]=as.integer(comb.geno[,4])
+      comb.geno[,5]=as.character(comb.geno[,5])
+      
+      comb.geno <- comb.geno[ order(comb.geno[,3]),]
+                
       return(comb.geno)
     
     }
     
     if(type=="genlight"){
-      
-      library(adegenet)
-            
+                  
       geno2 <- genotype.file
       
       geno <- as.matrix(geno2) #extract genotype data from genlight object

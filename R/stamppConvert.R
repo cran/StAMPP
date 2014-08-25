@@ -3,7 +3,7 @@
 # Import genotype data and convert it into StAMPP format
 # 
 # Luke Pembleton
-# luke.pembleton@dpi.vic.gov.au
+# luke.pembleton@depi.vic.gov.au
 #
 ###########################################################
 

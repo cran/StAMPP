@@ -3,7 +3,7 @@
 # Convert genetic distance matrix to PHYLIP text file
 # 
 # Luke Pembleton
-# luke.pembleton@dpi.vic.gov.au
+# luke.pembleton@depi.vic.gov.au
 #
 #######################################################
 

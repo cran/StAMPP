@@ -3,7 +3,7 @@
 # Nei's Genetic Distance
 # 
 # Luke Pembleton
-# luke.pembleton@dpi.vic.gov.au
+# luke.pembleton@depi.vic.gov.au
 #
 ###################################
 

@@ -3,7 +3,7 @@
 # Analysis of Molecular Variance
 # 
 # Luke Pembleton
-# luke.pembleton@dpi.vic.gov.au
+# luke.pembleton@depi.vic.gov.au
 #
 ###################################
 
@@ -43,6 +43,8 @@ stamppAmova <- function(dist.mat, geno, perm=100){
   }
   
   pop.names <- geno[,2]
+  
+  pop.names <- factor(pop.names) #updated line for compatibility with pegas 0.6
   
   temp <- environment(environment) #create temp environment
   

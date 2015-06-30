@@ -6,7 +6,7 @@
 Statistical Analysis of Mixed Ploidy Populations
 }
 \description{
-StAMPP allows users to calculate pairwise Nei's Genetic Distances (Nei 1972), pairwise Fixation
+Allows users to calculate pairwise Nei's Genetic Distances (Nei 1972), pairwise Fixation
  Indexes (Fst) (Weir & Cockerham 1984) and also Genomic Relationship matrixes following Yang et al. (2010) in mixed and single
  ploidy populations. Bootstrapping across loci is implememted during Fst calculation to generate confidence intervals and p-values
  around pairwise Fst values. StAMPP utilises SNP genotype data of any ploidy level (with the ability to handle missing data) and is coded to  
@@ -16,8 +16,8 @@ StAMPP allows users to calculate pairwise Nei's Genetic Distances (Nei 1972), pa
 \tabular{ll}{
 Package: \tab StAMPP\cr
 Type: \tab Package\cr
-Version: \tab 1.1\cr
-Date: \tab 2013-06-06\cr
+Version: \tab 1.4\cr
+Date: \tab 2015-06-30\cr
 License: \tab GPL-3\cr
 }
 Biallelic AB genotype or frequency of allele A genotype data can be imported into and R and converted into allele frequencies and stored in a data frame using the stamppConvert() function. The resulting allele frequency data frame can be used as the genotype information for;
@@ -32,7 +32,7 @@ Please refer to; LW Pembleton, NOI Cogan & FW Forster, 2013, Molecular Ecology R
 \author{
 LW Pembleton
 
-Maintainer: LW Pembleton <luke.pembleton@dpi.vic.gov.au>
+Maintainer: LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
 }
 \references{
 Nei M (1972) Genetic Distance between Populations. The American Naturalist 106, 283-292.

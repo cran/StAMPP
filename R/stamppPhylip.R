@@ -3,7 +3,7 @@
 # Convert genetic distance matrix to PHYLIP text file
 # 
 # Luke Pembleton
-# luke.pembleton@depi.vic.gov.au
+# luke.pembleton@ecodev.vic.gov.au
 #
 #######################################################
 
@@ -52,6 +52,6 @@ function(distance.mat, file=""){
   
   phylip.mat[phylip.mat=="-0.00000"]="0.00000"
   
-  write.table(phylip.mat, file=file, sep="  ", row.names=TRUE, col.names=FALSE, quote=FALSE) #save the PHYLIP format distane matrix as a text file
+  write.table(phylip.mat, file=file, sep="\t", row.names=TRUE, col.names=FALSE, quote=FALSE) #save the PHYLIP format distane matrix as a text file
   
 }

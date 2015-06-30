@@ -3,7 +3,7 @@
 # Analysis of Molecular Variance
 # 
 # Luke Pembleton
-# luke.pembleton@depi.vic.gov.au
+# luke.pembleton@ecodev.vic.gov.au
 #
 ###################################
 

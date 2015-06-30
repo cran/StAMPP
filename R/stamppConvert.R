@@ -3,7 +3,7 @@
 # Import genotype data and convert it into StAMPP format
 # 
 # Luke Pembleton
-# luke.pembleton@depi.vic.gov.au
+# luke.pembleton@ecodev.vic.gov.au
 #
 ###########################################################
 
@@ -17,7 +17,8 @@ function (genotype.file, type="csv"){
       }else{
         geno <- genotype.file #import from R workspace
       }  
-                  
+      
+      
       totalind <- nrow(geno) #number of individuals
       nloc <- ncol(geno)-4 #number of loci/markers
       
@@ -81,8 +82,8 @@ function (genotype.file, type="csv"){
       
       comb.geno[,1]=as.character(comb.geno[,1])
       comb.geno[,2]=as.character(comb.geno[,2])
-      comb.geno[,3]=as.integer(comb.geno[,3])
-      comb.geno[,4]=as.integer(comb.geno[,4])
+      comb.geno[,3]=as.integer(as.character(comb.geno[,3]))
+      comb.geno[,4]=as.integer(as.character(comb.geno[,4]))
       comb.geno[,5]=as.character(comb.geno[,5])
       
       comb.geno <- comb.geno[ order(comb.geno[,3]),]

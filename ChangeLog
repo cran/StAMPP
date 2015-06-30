@@ -1,4 +1,11 @@
-    	CHANGES IN STAMPP VERSION 1.3
+    	CHANGES IN STAMPP VERSION 1.4
+
+2015-06-30 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+
+* fixed format compatibility issues with stamppPhylip and the updated software program Darwin v6
+* bug fixes during importation of polyploid genotype data
+
+      CHANGES IN STAMPP VERSION 1.3
 
 2014-08-25 LW Pembleton <luke.pembleton@depi.vic.gov.au>
 

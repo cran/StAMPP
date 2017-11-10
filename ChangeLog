@@ -1,3 +1,15 @@
+    	CHANGES IN STAMPP VERSION 1.5.1
+
+2017-10-10 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+
+* bug fixes during bootstrapping Fst calculation if Fst values are NaN
+
+    	CHANGES IN STAMPP VERSION 1.5
+
+2016-10-10 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+
+* bug fixes during importation of genlight objects
+
     	CHANGES IN STAMPP VERSION 1.4
 
 2015-06-30 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>

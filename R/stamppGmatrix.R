@@ -38,7 +38,8 @@ function(geno){
     geno <- cbind(genoLHS, geno) #combine genotype data with labels to form stampp geno file
     
     geno[,2]=as.character(pop.names)
-    geno[,4]=geno2@ploidy
+    
+    geno[,4]=as.numeric(as.character(geno[,4]))
     
     row.names(geno)=NULL
     

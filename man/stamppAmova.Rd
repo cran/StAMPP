@@ -29,7 +29,7 @@ This function uses the amova function from the PEGAS package.
 An object of class "amova" which is a list containing a table of sum of square deviations (SSD), mean square deviations (MSD) and the number of degrees of freedom as well as the variance components
 }
 \references{
-Paradis E (2010) pegas: an R package for population genetics with an integrated-modular approach. Bioinformatics 26, 419-420.
+Paradis E (2010) pegas: an R package for population genetics with an integrated-modular approach. Bioinformatics 26, 419-420. <doi:10.1093/bioinformatics/btp696>
 }
 \author{
 LW Pembleton

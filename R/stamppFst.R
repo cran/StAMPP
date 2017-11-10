@@ -37,7 +37,8 @@ function (geno, nboots=100, percent=95, nclusters=1){
     geno <- cbind(genoLHS, geno) #combine genotype data with labels to form stampp geno file
     
     geno[,2]=as.character(pop.names)
-    geno[,4]=geno2@ploidy
+    
+    geno[,4]=as.numeric(as.character(geno[,4]))
     
     row.names(geno)=NULL
     
@@ -244,7 +245,7 @@ function (geno, nboots=100, percent=95, nclusters=1){
     
     order.boots <- boots[,3:(2+nboots)] 
     order.boots <- data.matrix(order.boots)
-    order.boots <- t(apply(order.boots, 1, sort)) #sort bootstrapped Fst values from smallest to largest
+    order.boots <- t(apply(order.boots, 1, sort, na.last=T)) #sort bootstrapped Fst values from smallest to largest
     lowerper <- order.boots[,(ceiling(percent*nboots))] #identify the Fst values on the lower CI boundry
     upperper <- order.boots[,(floor((1-percent)*nboots))] #identify the Fst values on the upper CI boundry
     pval <- (rowSums(order.boots<=0, na.rm=TRUE))/nboots #calculate p-values

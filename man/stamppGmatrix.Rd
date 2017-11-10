@@ -18,7 +18,7 @@ a data frame containing allele frequency data generated from stamppConvert, or a
 An object of class matrix which contains the genomic relationship values between each individual.
 }
 \references{
-Yang J, Benyamin B, McEvoy BP, et al (2010) Common SNPs explain a large proportion of the heritability for human height. Nat Genet 42, 565-569
+Yang J, Benyamin B, McEvoy BP, et al (2010) Common SNPs explain a large proportion of the heritability for human height. Nat Genet 42, 565-569. <doi:10.1038/ng.608>
 }
 \author{
 LW Pembleton

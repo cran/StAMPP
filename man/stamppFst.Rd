@@ -35,9 +35,9 @@ An object list with the components:
 If nboots<2, no bootstrapping is performed and therefore only a matrix of Fst values is returned.  
 }
 \references{
-Wright S (1949) The Genetical Structure of Populations. Annals of Human Genetics 15, 323-354.
+Wright S (1949) The Genetical Structure of Populations. Annals of Human Genetics 15, 323-354. <doi:10.1111/j.1469-1809.1949.tb02451.x>
 
-Weir BS, Cockerham CC (1984) Estimating F Statistics for the ANalysis of Population Structure. Evolution 38, 1358-1370.
+Weir BS, Cockerham CC (1984) Estimating F Statistics for the ANalysis of Population Structure. Evolution 38, 1358-1370. <doi:10.2307/2408641>
 }
 \author{
 LW Pembleton

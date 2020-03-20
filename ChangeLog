@@ -1,31 +1,43 @@
+    	CHANGES IN STAMPP VERSION 1.6.1
+
+2020-03-18 LW Pembleton <luke.pembleton at agriculture.vic.gov.au>
+
+* fixed error and example data documentation
+
+    	CHANGES IN STAMPP VERSION 1.6.0
+
+2020-03-12 LW Pembleton <luke.pembleton at agriculture.vic.gov.au>
+
+* updated to reflect the new R 4.0.0 default of stringsAsFactors = FALSE in data.frame() and read.table()
+
     	CHANGES IN STAMPP VERSION 1.5.1
 
-2017-10-10 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+2017-10-10 LW Pembleton <luke.pembleton at ecodev.vic.gov.au>
 
 * bug fixes during bootstrapping Fst calculation if Fst values are NaN
 
     	CHANGES IN STAMPP VERSION 1.5
 
-2016-10-10 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+2016-10-10 LW Pembleton <luke.pembleton at ecodev.vic.gov.au>
 
 * bug fixes during importation of genlight objects
 
     	CHANGES IN STAMPP VERSION 1.4
 
-2015-06-30 LW Pembleton <luke.pembleton@ecodev.vic.gov.au>
+2015-06-30 LW Pembleton <luke.pembleton at ecodev.vic.gov.au>
 
 * fixed format compatibility issues with stamppPhylip and the updated software program Darwin v6
 * bug fixes during importation of polyploid genotype data
 
       CHANGES IN STAMPP VERSION 1.3
 
-2014-08-25 LW Pembleton <luke.pembleton@depi.vic.gov.au>
+2014-08-25 LW Pembleton <luke.pembleton at depi.vic.gov.au>
 
 * updated for compatibility with pegas 0.6
 
       CHANGES IN STAMPP VERSION 1.2
 
-2014-02-26 LW Pembleton <luke.pembleton@dpi.vic.gov.au>
+2014-02-26 LW Pembleton <luke.pembleton at dpi.vic.gov.au>
 
 * speed improvements to stamppConvert, stamppNeisD and stamppGmatrix for large datasets
 
@@ -35,6 +47,6 @@
 
       CHANGES IN STAMPP VERSION 1.1
 
-2013-06-06 LW Pembleton <luke.pembleton@dpi.vic.gov.au>
+2013-06-06 LW Pembleton <luke.pembleton at dpi.vic.gov.au>
 
 * updated for compatibility with adegenet 1.3-9

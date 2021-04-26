@@ -19,6 +19,7 @@
 #' @author Luke Pembleton <luke.pembleton at agriculture.vic.gov.au>
 #' @references Paradis E (2010) pegas: an R package for population genetics with an integrated-modular approach. Bioinformatics 26, 419-420. <doi:10.1093/bioinformatics/btp696>
 #' @import adegenet pegas
+#' @importFrom stats as.dist
 #' @export
 stamppAmova <- function(dist.mat, geno, perm=100){
 
@@ -60,17 +61,10 @@ stamppAmova <- function(dist.mat, geno, perm=100){
 
   pop.names <- factor(pop.names) #updated line for compatibility with pegas 0.6
 
-  temp <- environment(environment) #create temp environment
+  dist.mat <- as.dist(dist.mat)
 
-  assign("dist", dist.mat, envir=temp)
-  assign("pop.names", pop.names, envir=temp)
-  assign("perm", perm, envir=temp)
-
-  res <- with(temp, amova(dist ~ pop.names, nperm=perm))
-
-  rm(pop.names, perm, temp) #remove temp env
+  res <- amova(dist.mat ~ pop.names, nperm=perm)
 
   return(res)
-
 
 }

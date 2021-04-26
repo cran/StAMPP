@@ -1,10 +1,10 @@
 Package: StAMPP
 Type: Package
 Title: Statistical Analysis of Mixed Ploidy Populations
-Depends: R (>= 2.14.0), pegas
+Depends: R (>= 3.2.0), pegas
 Imports: parallel, doParallel, foreach, adegenet, methods, utils
-Version: 1.6.1
-Date: 2020-03-18
+Version: 1.6.2
+Date: 2021-04-22
 Author: LW Pembleton
 Maintainer: LW Pembleton <luke.pembleton@agriculture.vic.gov.au>
 Description: Allows users to calculate pairwise Nei's Genetic Distances (Nei 1972), pairwise Fixation
@@ -14,9 +14,11 @@ Description: Allows users to calculate pairwise Nei's Genetic Distances (Nei 197
  utilise multithreading where available to allow efficient analysis of large datasets. StAMPP is able to handle genotype data from genlight objects 
  allowing integration with other packages such adegenet.
  Please refer to LW Pembleton, NOI Cogan & JW Forster, 2013, Molecular Ecology Resources, 13(5), 946-952. <doi:10.1111/1755-0998.12129> for the appropriate citation and user manual. Thank you in advance.
+URL: https://github.com/lpembleton/StAMPP
 License: GPL-3
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
+Encoding: UTF-8
 NeedsCompilation: no
-Packaged: 2020-03-19 23:34:26 UTC; lp40
+Packaged: 2021-04-26 05:15:08 UTC; lp40
 Repository: CRAN
-Date/Publication: 2020-03-20 10:20:15 UTC
+Date/Publication: 2021-04-26 17:00:02 UTC
